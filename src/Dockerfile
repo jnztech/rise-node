@@ -23,7 +23,7 @@ USER root
 RUN apk del .gyp
 USER rise
 
-COPY --chown=rise . /home/rise/rise-node/
+COPY --chown=rise . /home/rise/rise/
 RUN npm run transpile && npm prune --production
 
 ENV NETWORK="mainnet"
