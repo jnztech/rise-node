@@ -12,8 +12,8 @@ RUN apk --update add --no-cache --virtual .gyp \
 RUN adduser -D rise
 USER rise
 
-RUN sudo wget https://downloads.rise.vision/core/mainnet/latest.tar.gz \
-&& tar zxvpf latest.tar.gz && rm latest.tar.gz
+RUN wget https://downloads.rise.vision/core/mainnet/latest.tar.gz && \
+tar zxvpf latest.tar.gz && rm latest.tar.gz
 
 WORKDIR /home/rise/rise
 
