@@ -48,7 +48,7 @@ export default {
   blockHeaderLength            : 248,
   blockSlotWindow              : 5, // window of which a slot could be accepted.
   blockTime                    : 30,
-  blockReceiptTimeOut          : 30 * 2, // 2 blocks
+  blockReceiptTimeOut          : 30 + 15, // 1.5 blocks
   confirmationLength           : 77,
   addressSuffix                : 'R',
   epochTime                    : new Date(Date.UTC(2016, 4, 24, 17, 0, 0, 0)),
@@ -56,6 +56,7 @@ export default {
     { height: 1, ver: '>=0.1.0' },
     { height: 241000, ver: '>=0.1.1' },
     { height: 826500,  ver: '>=0.1.2' },
+    { height: 2432687,  ver: '>=3.0.1' },
   ],
   fees                         : [
     {
@@ -76,7 +77,7 @@ export default {
   maxAmount                    : 100000000,
   maxConfirmations             : 77 * 100,
   maxPayloadLength             : 1024 * 1024,
-  maxPeers                     : 100,
+  maxPeers                     : 200,
   maxProtoBufPayloadLength     : 100 * 1024, // (100KB) Maximum number of bytes for a Protocol Buffer Request/Response Body
   maxRequests                  : 10000 * 12,
   maxSharedTxs                 : 100,
@@ -99,9 +100,9 @@ export default {
     { height: 13, reward: 1500000000 },
     { height: 1054080, reward: 1200000000 },
     { height: 1054080 * 2, reward: 900000000 },
-    { height: 1054080 * 3, reward: 600000000 },
-    { height: 1054080 * 4, reward: 300000000 },
-    { height: 1054080 * 5, reward: 100000000 },
+    { height: 2432687, reward: 3000000000 },
+    { height: 2432687 + 1054080, reward: 2000000000 },
+    { height: 2432687 + 2108160, reward: 1500000000 },
   ],
   signatureLength              : 196,
   totalAmount                  : 10999999991000000,
@@ -123,8 +124,9 @@ export default {
   // tslint:disable max-line-length
   dposv2: {
     delegatesPoolSize: 199,          // Total number of delegates to choose forgers from, when dposv2 is on. -1 for no limit.
-    firstBlock: 1536256,             // Block height from which the fair delegates system will be enabled.
-    maxContinuousMissedBlocks: 28 * 3, // Maximum number of missed blocks in a row before banning delegate. A good value might be 3 days,
+    firstBlock: 1536312,             // Block height from which the fair delegates system will be enabled.
+    maxContinuousMissedBlocks: 28 * 1, // Maximum number of missed blocks in a row before banning delegate. A good value might be 3 days,
     minForged: 200,                  // Enable productivity-based vote weight after a delegate has forged  at least # blocks
   },
+  timeDriftCorrection: 2, // 2 Seconds
 };
