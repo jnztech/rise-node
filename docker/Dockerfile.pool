@@ -9,10 +9,14 @@ RUN set -x \
         libtool \
         make \
         python \
-    && apt -yq install bash openssh-server python3-pip \
-    && apt -yq clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-    && bash --version && ssh -V && npm -v && node -v && yarn -v
+        bash \
+        openssh-server \
+        python3-pip \
+        bash --version \
+        ssh -V \
+        npm -v \
+        node -v \
+        yarn -v
 
 RUN pip3 install requests
 RUN apk --update add --no-cache postgresql-dev
@@ -22,6 +26,8 @@ USER rise
 
 COPY --chown=rise ./package.json /home/rise/rise-node/package.json
 COPY --chown=rise ./package-lock.json /home/rise/rise-node/package-lock.json
+COPY --chown=rise ../rise-pool/dpos-api-fallback/package.json /home/rise/rise-node/rise-pool/dpos-api-fallback/package.json
+COPY --chown=rise ../rise-pool/dpos-api-fallback/package-lock.json /home/rise/rise-node/rise-pool/dpos-api-fallback/package-lock.json
 
 WORKDIR /home/rise/rise-node
 RUN npm install
@@ -39,6 +45,7 @@ COPY --chown=rise . /home/rise/rise-node/
 RUN npm run transpile && npm prune --production
 
 WORKDIR /home/rise/rise-node/rise-pool/dpos-api-fallback
+COPY --chown=rise . /home/rise/rise-node/
 RUN npm run package
 
 COPY --chown=rise ./docker/mainnet_config.json /home/rise/config.json
