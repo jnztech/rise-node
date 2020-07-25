@@ -9,8 +9,8 @@ RUN set -x \
         libtool \
         make \
         python \
-    && apt-get -yq install bash openssh-server python3-pip \
-    && apt-get -yq clean \
+    && apt -yq install bash openssh-server python3-pip \
+    && apt -yq clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && bash --version && ssh -V && npm -v && node -v && yarn -v
 
@@ -26,10 +26,8 @@ COPY --chown=rise ./package-lock.json /home/rise/rise-node/package-lock.json
 WORKDIR /home/rise/rise-node
 RUN npm install
 
-
 WORKDIR /home/rise/rise-node/rise-pool/dpos-api-fallback
 RUN npm install
-RUN npm run package
 
 WORKDIR /home/rise/rise-node
 
@@ -39,6 +37,9 @@ USER rise
 
 COPY --chown=rise . /home/rise/rise-node/
 RUN npm run transpile && npm prune --production
+
+WORKDIR /home/rise/rise-node/rise-pool/dpos-api-fallback
+RUN npm run package
 
 COPY --chown=rise ./docker/mainnet_config.json /home/rise/config.json
 
