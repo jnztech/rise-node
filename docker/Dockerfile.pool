@@ -1,56 +1,32 @@
 FROM node:13-alpine
 
-RUN set -x \
-    && apk --update add --no-cache --virtual .gyp \
-        autoconf \
-        automake \
-        findutils \
-        g++ \
-        libtool \
-        make \
-        python \
-        bash \
-        openssh-server \
-        python3-pip \
-        bash --version \
-        ssh -V \
-        npm -v \
-        node -v \
-        yarn -v
+ENV PYTHONUNBUFFERED=1
 
-RUN pip3 install requests
-RUN apk --update add --no-cache postgresql-dev
+RUN echo "**** install Python ****" && \
+    apk add --no-cache python3 && \
+    if [ ! -e /usr/bin/python ]; then ln -sf python3 /usr/bin/python ; fi && \
+    echo "**** install pip ****" && \
+    python3 -m ensurepip && \
+    rm -r /usr/lib/python*/ensurepip && \
+    pip3 install --no-cache --upgrade pip setuptools wheel && \
+    if [ ! -e /usr/bin/pip ]; then ln -s pip3 /usr/bin/pip ; fi
+
+RUN pip install requests
+
+WORKDIR /home/rise/rise-pool/dpos-api-fallback
 
 RUN adduser -D rise
 USER rise
 
-COPY --chown=rise ./package.json /home/rise/rise-node/package.json
-COPY --chown=rise ./package-lock.json /home/rise/rise-node/package-lock.json
-COPY --chown=rise ../rise-pool/dpos-api-fallback/package.json /home/rise/rise-node/rise-pool/dpos-api-fallback/package.json
-COPY --chown=rise ../rise-pool/dpos-api-fallback/package-lock.json /home/rise/rise-node/rise-pool/dpos-api-fallback/package-lock.json
+COPY --chown=rise ../rise-pool/dpos-api-fallback/package.json /home/rise/rise-pool/dpos-api-fallback/package.json
+COPY --chown=rise ../rise-pool/dpos-api-fallback/package-lock.json /home/rise/rise-pool/dpos-api-fallback/package-lock.json
 
-WORKDIR /home/rise/rise-node
 RUN npm install
-
-WORKDIR /home/rise/rise-node/rise-pool/dpos-api-fallback
-RUN npm install
-
-WORKDIR /home/rise/rise-node
 
 USER root
 RUN apk del .gyp
 USER rise
 
-COPY --chown=rise . /home/rise/rise-node/
-RUN npm run transpile && npm prune --production
-
-WORKDIR /home/rise/rise-node/rise-pool/dpos-api-fallback
-COPY --chown=rise . /home/rise/rise-node/
+WORKDIR /home/rise/rise-pool/dpos-api-fallback
+COPY --chown=rise . /home/rise/rise-pool
 RUN npm run package
-
-COPY --chown=rise ./docker/mainnet_config.json /home/rise/config.json
-
-ENV NETWORK="mainnet"
-EXPOSE 5555
-
-CMD node dist/app.js -n $NETWORK -e /home/rise/config.json
