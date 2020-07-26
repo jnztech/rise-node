@@ -1,5 +1,5 @@
 #!/bin/sh
-echo "Starting startup.sh.."
-echo "*       *       *       *       *       run-parts /etc/periodic/1min" >> /etc/crontabs/root
-crontab -l
-/usr/bin/crond -f -l 8
+echo "Starting start.sh.."
+sudo echo "*       *       *       *       *       run-parts /etc/periodic/1min" >> /etc/crontabs/root
+sudo crontab -l
+sudo /usr/bin/crond -f -l 8
