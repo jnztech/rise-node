@@ -33,7 +33,7 @@ WORKDIR /home/rise/rise-pool/dpos-api-fallback
 RUN npm install
 RUN npm run package
 
-RUN    echo "**** remove git ****" && \
-       apk remove git
+RUN    echo "**** del git ****" && \
+       apk del git
 
 CMD npm start -- -n https://wallet.rise.vision -s R
