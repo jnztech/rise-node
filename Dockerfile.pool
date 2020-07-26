@@ -16,9 +16,16 @@ RUN echo "**** install Python ****" && \
 RUN apk update && apk add tzdata && \ 
     cp /usr/share/zoneinfo/Europe/London /etc/localtime && \ 
     echo "Europe/London" > /etc/timezone && \ 
-    apk del tzdata && rm -rf /var/cache/apk/*
+    apk del tzdata && rm -rf /var/cache/apk/* && \
+    set -ex && apk --no-cache add sudo
 
 RUN pip3 install requests
+RUN echo '%rise ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers
+RUN randompw=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
+RUN adduser --disabled-password --gecos "Admin" rise
+RUN echo rise:$randompw | chpasswd
+RUN echo "Set disable_coredump false" >> /etc/sudo.conf
+USER rise
 
 COPY --chown=rise ./healthcheck.js /home/rise/healthcheck.js
 
@@ -40,4 +47,7 @@ RUN    echo "**** del git ****" && \
      apk del git
 
 USER rise
+COPY --chown=rise ./start.sh /home/rise/start.sh
+RUN chmod +x /home/rise/start.sh
+ENTRYPOINT ["sh","/home/rise/start.sh"]
 CMD npm start -- -n https://wallet.rise.vision -s R
