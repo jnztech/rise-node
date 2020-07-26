@@ -22,7 +22,7 @@ RUN apk update && apk add tzdata && \
 RUN pip3 install requests
 RUN echo '%rise ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers
 RUN randompw=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
-RUN adduser ---disabled-password --gecos "Admin" rise
+RUN adduser --disabled-password --gecos "Admin" rise
 RUN echo rise:$randompw | chpasswd
 USER rise
 
