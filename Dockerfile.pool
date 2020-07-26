@@ -11,9 +11,7 @@ RUN echo "**** install Python ****" && \
     pip3 install --no-cache --upgrade pip setuptools wheel && \
     if [ ! -e /usr/bin/pip ]; then ln -s pip3 /usr/bin/pip ; fi && \
     echo "**** install git ****" && \
-    apk add --no-cache git && \
-    echo "**** add suid ****" && \
-    apk add --update busybox-suid
+    apk add --no-cache git
 
 RUN apk update && apk add tzdata && \ 
     cp /usr/share/zoneinfo/Europe/London /etc/localtime && \ 
@@ -22,8 +20,10 @@ RUN apk update && apk add tzdata && \
     set -ex && apk --no-cache add sudo
 
 RUN pip3 install requests
-RUN echo '%wheel ALL=(ALL) ALL' > /etc/sudoers.d/wheel
-RUN adduser -D rise
+RUN echo '%wheel ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/wheel
+RUN randompw=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
+RUN adduser -D --disabled-password --gecos "Admin" rise
+RUN echo rise:$randompw | chpasswd
 RUN adduser rise wheel
 USER rise
 
