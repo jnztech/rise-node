@@ -18,6 +18,8 @@ RUN pip3 install requests
 RUN adduser -D rise
 USER rise
 
+COPY --chown=rise ./healthcheck.json /home/rise/healthcheck.json
+
 WORKDIR /home/rise
 RUN git clone https://github.com/JannasTer/rise-pool.git
 
@@ -28,9 +30,7 @@ WORKDIR /home/rise/rise-pool/dpos-api-fallback
 RUN npm install
 RUN npm run package
 
-COPY --chown=rise ./healthcheck.json /home/rise/rise-pool/dpos-api-fallback/healthcheck.json
-
 HEALTHCHECK --interval=12s --timeout=12s --start-period=30s \  
- CMD node /home/rise/rise-pool/dpos-api-fallback/healthcheck.json
+ CMD node /home/rise/healthcheck.json
 
 CMD npm start -- -n https://wallet.rise.vision -s R
