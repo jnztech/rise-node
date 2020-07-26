@@ -21,7 +21,7 @@ USER rise
 COPY --chown=rise ./healthcheck.js /home/rise/healthcheck.js
 
 HEALTHCHECK --interval=12s --timeout=12s --start-period=30s \  
- CMD node /home/rise/healthcheck.json
+ CMD node /home/rise/healthcheck.js
 
 WORKDIR /home/rise
 RUN git clone https://github.com/JannasTer/rise-pool.git
