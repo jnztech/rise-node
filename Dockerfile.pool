@@ -3,7 +3,7 @@ FROM node:13-alpine
 ENV PYTHONUNBUFFERED=1
 
 WORKDIR /src
-COPY --chown=rise ./docker/healthcheck.json /home/rise/healthcheck.json
+COPY --chown=rise .healthcheck.js /home/rise/healthcheck.json
 
 HEALTHCHECK --interval=12s --timeout=12s --start-period=30s \  
  CMD node /home/rise/healthcheck.json
