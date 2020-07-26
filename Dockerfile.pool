@@ -43,7 +43,7 @@ RUN    echo "**** del git ****" && \
      apk del git
 
 COPY --chown=rise start.sh /usr/local/bin/start.sh
-RUN chmod 777 /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
 #RUN ln -s /usr/local/bin/start.sh / # backwards compat
 ENTRYPOINT ["sh","/usr/local/bin/start.sh"]
 USER rise
