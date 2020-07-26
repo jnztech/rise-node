@@ -45,7 +45,9 @@ USER root
 RUN  echo "**** del git ****" && \
      apk del git
 COPY ./one /etc/cron.d/one
-RUN chmod 644 /etc/cron.d/one
+RUN chmod 0644 /etc/cron.d/one
+RUN crontab /etc/cron.d/one
+RUN touch /var/log/cron.log
 
 USER rise
 COPY --chown=rise ./start.sh /home/rise/start.sh
