@@ -35,7 +35,6 @@ RUN echo '%rise ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers
 RUN randompw=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
 RUN adduser --disabled-password --gecos "Admin" rise
 RUN echo rise:$randompw | chpasswd
-RUN echo "Set disable_coredump false" >> /etc/sudo.conf
 USER rise
 
 COPY --chown=rise ./healthcheck.js /home/rise/healthcheck.js
