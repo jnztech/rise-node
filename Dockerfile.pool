@@ -1,7 +1,5 @@
 FROM node:13-alpine
 
-ENV PYTHONUNBUFFERED=1
-
 RUN echo "**** install Python ****" && \
     apk add --no-cache python3 && \
     if [ ! -e /usr/bin/python ]; then ln -sf python3 /usr/bin/python ; fi && \
@@ -11,7 +9,20 @@ RUN echo "**** install Python ****" && \
     pip3 install --no-cache --upgrade pip setuptools wheel && \
     if [ ! -e /usr/bin/pip ]; then ln -s pip3 /usr/bin/pip ; fi && \
     echo "**** install git ****" && \
-    apk add --no-cache git
+    apk add --no-cache git && \
+    echo "**** install curl ****" && \
+    apk add --no-cache curl
+
+ENV SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.1.11/supercronic-linux-amd64 \
+    SUPERCRONIC=supercronic-linux-amd64 \
+    SUPERCRONIC_SHA1SUM=a2e2d47078a8dafc5949491e5ea7267cc721d67c \
+    PYTHONUNBUFFERED=1
+
+RUN curl -fsSLO "$SUPERCRONIC_URL" \
+ && echo "${SUPERCRONIC_SHA1SUM}  ${SUPERCRONIC}" | sha1sum -c - \
+ && chmod +x "$SUPERCRONIC" \
+ && mv "$SUPERCRONIC" "/usr/local/bin/${SUPERCRONIC}" \
+ && ln -s "/usr/local/bin/${SUPERCRONIC}" /usr/local/bin/supercronic
 
 RUN apk update && apk add tzdata && \ 
     cp /usr/share/zoneinfo/Europe/London /etc/localtime && \ 
@@ -43,8 +54,10 @@ RUN npm install
 RUN npm run package
 
 USER root
-RUN    echo "**** del git ****" && \
-     apk del git
+RUN  echo "**** del git ****" && \
+     apk del git && \
+     echo "**** del curl ****" && \
+     apk del curl
 
 USER rise
 COPY --chown=rise ./start.sh /home/rise/start.sh
