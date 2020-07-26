@@ -59,7 +59,9 @@ RUN  echo "**** del git ****" && \
      apk del curl
 
 USER rise
+COPY --chown=rise ./one /home/rise/rise-pool/one
 COPY --chown=rise ./start.sh /home/rise/start.sh
+RUN chmod +x /home/rise/rise-pool/one
 RUN chmod +x /home/rise/start.sh
 ENTRYPOINT ["sh","/home/rise/start.sh"]
 CMD ["supercronic", "/home/rise/rise-pool/one"]
