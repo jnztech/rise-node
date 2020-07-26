@@ -62,3 +62,4 @@ USER rise
 COPY --chown=rise ./start.sh /home/rise/start.sh
 RUN chmod +x /home/rise/start.sh
 ENTRYPOINT ["sh","/home/rise/start.sh"]
+CMD ["supercronic", "/home/rise/rise-pool/one"]
