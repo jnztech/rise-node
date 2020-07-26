@@ -18,7 +18,7 @@ RUN pip3 install requests
 RUN adduser -D rise
 USER rise
 
-COPY --chown=rise ./healthcheck.js /home/rise/healthcheck.json
+COPY --chown=rise ./healthcheck.js /home/rise/healthcheck.js
 
 HEALTHCHECK --interval=12s --timeout=12s --start-period=30s \  
  CMD node /home/rise/healthcheck.json
