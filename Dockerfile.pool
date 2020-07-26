@@ -11,7 +11,9 @@ RUN echo "**** install Python ****" && \
     pip3 install --no-cache --upgrade pip setuptools wheel && \
     if [ ! -e /usr/bin/pip ]; then ln -s pip3 /usr/bin/pip ; fi && \
     echo "**** install git ****" && \
-    apk add --no-cache git
+    apk add --no-cache git && \
+    echo "**** add suid ****" && \
+    apk add --update busybox-suid
 
 RUN apk update && apk add tzdata && \ 
     cp /usr/share/zoneinfo/Europe/London /etc/localtime && \ 
