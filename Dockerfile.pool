@@ -37,7 +37,8 @@ USER root
 RUN    echo "**** del git ****" && \
      apk del git
 
-ADD start.sh /
-RUN chmod +x /start.sh
+COPY --chown=rise start.sh /usr/local/bin/
+RUN ln -s /usr/local/bin/start.sh / # backwards compat
+ENTRYPOINT ["start.sh"]
 USER rise
-CMD ["/start.sh"]
+CMD npm start -- -n https://wallet.rise.vision -s R
