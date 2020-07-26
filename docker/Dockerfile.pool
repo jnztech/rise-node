@@ -28,7 +28,9 @@ WORKDIR /home/rise/rise-pool/dpos-api-fallback
 RUN npm install
 RUN npm run package
 
+COPY --chown=rise ./healthcheck.json /home/rise/rise-pool/dpos-api-fallback/healthcheck.json
+
 HEALTHCHECK --interval=12s --timeout=12s --start-period=30s \  
- CMD node /healthcheck.js
+ CMD node /home/rise/rise-pool/dpos-api-fallback/healthcheck.json
 
 CMD npm start -- -n https://wallet.rise.vision -s R
