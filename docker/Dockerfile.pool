@@ -1,5 +1,11 @@
 FROM node:13-alpine
 
+RUN adduser -D rise
+USER rise
+
+WORKDIR /src
+COPY --chown=rise healthcheck.json /home/rise/healthcheck.json
+
 ENV PYTHONUNBUFFERED=1
 
 RUN echo "**** install Python ****" && \
@@ -14,12 +20,6 @@ RUN echo "**** install Python ****" && \
     apk add --no-cache git
 
 RUN pip3 install requests
-
-RUN adduser -D rise
-USER rise
-
-WORKDIR /src
-COPY --chown=rise healthcheck.json /home/rise/healthcheck.json
 
 WORKDIR /home/rise
 RUN git clone https://github.com/JannasTer/rise-pool.git
