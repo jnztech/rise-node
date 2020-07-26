@@ -18,6 +18,7 @@ RUN pip3 install requests
 RUN adduser -D rise
 USER rise
 
+WORKDIR /home/rise
 COPY --chown=rise ./healthcheck.json /home/rise/healthcheck.json
 
 WORKDIR /home/rise
