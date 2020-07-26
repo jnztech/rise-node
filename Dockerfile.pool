@@ -37,5 +37,7 @@ USER root
 RUN    echo "**** del git ****" && \
      apk del git
 
+ADD start.sh /
+RUN chmod +x /start.sh
 USER rise
-CMD npm start -- -n https://wallet.rise.vision -s R
+CMD ["/start.sh"]
