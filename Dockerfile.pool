@@ -18,11 +18,13 @@ RUN echo "**** install Python ****" && \
 RUN apk update && apk add tzdata && \ 
     cp /usr/share/zoneinfo/Europe/London /etc/localtime && \ 
     echo "Europe/London" > /etc/timezone && \ 
-    apk del tzdata && rm -rf /var/cache/apk/*
+    apk del tzdata && rm -rf /var/cache/apk/* && \
+    set -ex && apk --no-cache add sudo
 
 RUN pip3 install requests
-
+RUN echo '%wheel ALL=(ALL) ALL' > /etc/sudoers.d/wheel
 RUN adduser -D rise
+RUN adduser rise wheel
 USER rise
 
 COPY --chown=rise ./healthcheck.js /home/rise/healthcheck.js
@@ -44,7 +46,7 @@ USER root
 RUN    echo "**** del git ****" && \
      apk del git
 
-COPY --chown=rise start.sh /usr/local/bin/start.sh
+COPY ./start.sh /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/start.sh
 #RUN ln -s /usr/local/bin/start.sh / # backwards compat
 ENTRYPOINT ["sh","/usr/local/bin/start.sh"]
