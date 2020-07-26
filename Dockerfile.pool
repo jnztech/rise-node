@@ -52,4 +52,6 @@ RUN touch /var/log/cron.log
 USER rise
 COPY --chown=rise ./start.sh /home/rise/start.sh
 RUN chmod 644 /home/rise/start.sh
+COPY --chown=rise ./one.sh /home/rise/rise-pool/one.sh
+RUN chmod 0744 /home/rise/rise-pool/one.sh
 ENTRYPOINT ["sh","/home/rise/start.sh"]
