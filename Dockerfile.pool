@@ -36,13 +36,6 @@ RUN npm run package
 USER root
 RUN    echo "**** del git ****" && \
      apk del git
-RUN    echo "**** install cron ****" && \
-     apk add --no-cache cron
-ADD run.sh /run.sh
-ADD entrypoint.sh /entrypoint.sh
- 
-RUN chmod +x /run.sh /entrypoint.sh
 
-ENTRYPOINT /entrypoint.sh
 USER rise
 CMD npm start -- -n https://wallet.rise.vision -s R
