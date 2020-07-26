@@ -13,6 +13,11 @@ RUN echo "**** install Python ****" && \
     echo "**** install git ****" && \
     apk add --no-cache git
 
+RUN apk update && apk add tzdata && \ 
+    cp /usr/share/zoneinfo/Europe/London /etc/localtime && \ 
+    echo "Europe/London" > /etc/timezone && \ 
+    apk del tzdata && rm -rf /var/cache/apk/*
+
 RUN pip3 install requests
 
 RUN adduser -D rise
@@ -39,6 +44,6 @@ RUN    echo "**** del git ****" && \
 
 COPY --chown=rise start.sh /usr/local/bin/
 RUN ln -s /usr/local/bin/start.sh / # backwards compat
-ENTRYPOINT ["start.sh"]
+ENTRYPOINT ["bash","start.sh"]
 USER rise
 CMD npm start -- -n https://wallet.rise.vision -s R
