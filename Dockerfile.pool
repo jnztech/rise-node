@@ -45,6 +45,6 @@ RUN    echo "**** del git ****" && \
 COPY --chown=rise start.sh /usr/local/bin/start.sh
 RUN chmod 777 /usr/local/bin/start.sh
 #RUN ln -s /usr/local/bin/start.sh / # backwards compat
-USER rise
 ENTRYPOINT ["sh","/usr/local/bin/start.sh"]
+USER rise
 CMD npm start -- -n https://wallet.rise.vision -s R
