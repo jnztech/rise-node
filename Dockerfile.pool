@@ -10,19 +10,8 @@ RUN echo "**** install Python ****" && \
     if [ ! -e /usr/bin/pip ]; then ln -s pip3 /usr/bin/pip ; fi && \
     echo "**** install git ****" && \
     apk add --no-cache git && \
-    echo "**** install curl ****" && \
-    apk add --no-cache curl
-
-ENV SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.1.11/supercronic-linux-amd64 \
-    SUPERCRONIC=supercronic-linux-amd64 \
-    SUPERCRONIC_SHA1SUM=a2e2d47078a8dafc5949491e5ea7267cc721d67c \
-    PYTHONUNBUFFERED=1
-
-RUN curl -fsSLO "$SUPERCRONIC_URL" \
- && echo "${SUPERCRONIC_SHA1SUM}  ${SUPERCRONIC}" | sha1sum -c - \
- && chmod +x "$SUPERCRONIC" \
- && mv "$SUPERCRONIC" "/usr/local/bin/${SUPERCRONIC}" \
- && ln -s "/usr/local/bin/${SUPERCRONIC}" /usr/local/bin/supercronic
+    echo "**** install cron ****" && \
+    apk add --no-cache cron
 
 RUN apk update && apk add tzdata && \ 
     cp /usr/share/zoneinfo/Europe/London /etc/localtime && \ 
@@ -54,14 +43,11 @@ RUN npm run package
 
 USER root
 RUN  echo "**** del git ****" && \
-     apk del git && \
-     echo "**** del curl ****" && \
-     apk del curl
+     apk del git
+COPY ./one /etc/cron.d/one
+RUN chmod 644 /etc/cron.d/one
 
 USER rise
-COPY --chown=rise ./one /home/rise/rise-pool/one
 COPY --chown=rise ./start.sh /home/rise/start.sh
-RUN chmod 644 /home/rise/rise-pool/one
 RUN chmod 644 /home/rise/start.sh
 ENTRYPOINT ["sh","/home/rise/start.sh"]
-CMD ["supercronic", "/home/rise/rise-pool/one"]
