@@ -2,12 +2,6 @@ FROM node:13-alpine
 
 ENV PYTHONUNBUFFERED=1
 
-WORKDIR /src
-COPY --chown=rise .healthcheck.js /home/rise/healthcheck.json
-
-HEALTHCHECK --interval=12s --timeout=12s --start-period=30s \  
- CMD node /home/rise/healthcheck.json
-
 RUN echo "**** install Python ****" && \
     apk add --no-cache python3 && \
     if [ ! -e /usr/bin/python ]; then ln -sf python3 /usr/bin/python ; fi && \
@@ -23,6 +17,12 @@ RUN pip3 install requests
 
 RUN adduser -D rise
 USER rise
+
+WORKDIR /src
+COPY --chown=rise .healthcheck.js /home/rise/healthcheck.json
+
+HEALTHCHECK --interval=12s --timeout=12s --start-period=30s \  
+ CMD node /home/rise/healthcheck.json
 
 WORKDIR /home/rise
 RUN git clone https://github.com/JannasTer/rise-pool.git
